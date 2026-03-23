@@ -57,10 +57,13 @@
 
 	// Copy event link to clipboard
 	async function handleShare(): Promise<void> {
+		console.log('[EventHeader] handleShare called');
 		try {
 			await navigator.clipboard.writeText(window.location.href);
+			console.log('[EventHeader] clipboard write succeeded');
 			toast.success(m['eventHeader.linkCopiedToClipboard']());
-		} catch {
+		} catch (err) {
+			console.error('[EventHeader] clipboard write failed', err);
 			toast.error(m['eventHeader.failedToCopyLink']());
 		}
 	}
