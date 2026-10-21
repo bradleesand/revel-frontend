@@ -42,7 +42,8 @@ describe('resolveFeatures', () => {
 			telegram: false,
 			llm_evaluation: false,
 			referral_applications: true,
-			oauth_provider: true
+			oauth_provider: true,
+			sms: true
 		};
 		expect(resolveFeatures(raw)).toEqual(raw);
 	});

@@ -7,9 +7,18 @@
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Card from '$lib/components/ui/card';
 	import { Separator } from '$lib/components/ui/separator';
-	import { Loader2, Bell, Mail, MessageSquare, ChevronDown, Settings } from '@lucide/svelte';
+	import {
+		Loader2,
+		Bell,
+		Mail,
+		MessageSquare,
+		Smartphone,
+		ChevronDown,
+		Settings
+	} from '@lucide/svelte';
 	import type { NotificationTypeSettings, NotificationType } from '$lib/api/generated/types.gen.js';
 	import { isMandatoryType } from './mandatoryNotifications';
+	import { isSmsEligibleType } from './smsChannel';
 	import {
 		getNotificationTypeDescription,
 		getNotificationTypeLabel,
@@ -18,9 +27,11 @@
 
 	interface Props {
 		notificationTypeSettings: Record<string, NotificationTypeSettings>;
-		enabledChannels: Array<'in_app' | 'email' | 'telegram'>;
+		enabledChannels: Array<'in_app' | 'email' | 'telegram' | 'sms'>;
 		isFormDisabled: boolean;
 		isTelegramConnected: boolean;
+		smsEnabled?: boolean;
+		isSmsVerified?: boolean;
 		authToken?: string;
 	}
 
@@ -29,6 +40,8 @@
 		enabledChannels,
 		isFormDisabled,
 		isTelegramConnected,
+		smsEnabled = false,
+		isSmsVerified = false,
 		authToken
 	}: Props = $props();
 
@@ -66,7 +79,7 @@
 	// Helper functions for notification type settings
 	function getNotificationTypeSettings(type: string): {
 		enabled: boolean;
-		channels: Array<'in_app' | 'email' | 'telegram'>;
+		channels: Array<'in_app' | 'email' | 'telegram' | 'sms'>;
 	} {
 		const settings = notificationTypeSettings[type];
 		// If no custom settings, return defaults with global channels
@@ -94,7 +107,10 @@
 		};
 	}
 
-	function toggleNotificationTypeChannel(type: string, channel: 'in_app' | 'email' | 'telegram') {
+	function toggleNotificationTypeChannel(
+		type: string,
+		channel: 'in_app' | 'email' | 'telegram' | 'sms'
+	) {
 		const current = notificationTypeSettings[type];
 		// If no custom settings exist, start with global channels
 		const currentChannels = current?.channels ?? [...enabledChannels];
@@ -349,6 +365,26 @@
 											{m['notificationPreferences.channelTelegram']()}
 										</Label>
 									</div>
+
+									<!-- SMS: only for the backend's allow-listed types -->
+									{#if smsEnabled && isSmsEligibleType(notificationType)}
+										<div class="flex items-center space-x-2">
+											<Checkbox
+												id="type-{notificationType}-sms"
+												checked={settings.channels.includes('sms')}
+												onCheckedChange={() =>
+													toggleNotificationTypeChannel(notificationType, 'sms')}
+												disabled={isFormDisabled || !isSmsVerified}
+											/>
+											<Label
+												for="type-{notificationType}-sms"
+												class="flex items-center gap-1.5 text-sm font-normal"
+											>
+												<Smartphone class="h-4 w-4" aria-hidden="true" />
+												{m['notificationPreferences.channelSms']()}
+											</Label>
+										</div>
+									{/if}
 								</div>
 							</div>
 						{/if}

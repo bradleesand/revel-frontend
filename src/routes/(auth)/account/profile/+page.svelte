@@ -13,6 +13,7 @@
 	import DietaryPreferencesManager from '$lib/components/profile/DietaryPreferencesManager.svelte';
 	import DietaryRestrictionsManager from '$lib/components/profile/DietaryRestrictionsManager.svelte';
 	import TelegramConnectionManager from '$lib/components/profile/TelegramConnectionManager.svelte';
+	import PhoneConnectionManager from '$lib/components/profile/PhoneConnectionManager.svelte';
 	import ProfilePictureUploader from '$lib/components/profile/ProfilePictureUploader.svelte';
 	import AttendeeVisibilitySelect from '$lib/components/profile/AttendeeVisibilitySelect.svelte';
 	import MarkdownEditor from '$lib/components/forms/MarkdownEditor.svelte';
@@ -656,6 +657,22 @@
 					>
 						<Info class="h-4 w-4 shrink-0" aria-hidden="true" />
 						<span>{m['profile.telegramUnavailable']()}</span>
+					</div>
+				{/if}
+			</div>
+		</div>
+
+		<!-- SMS / Phone Verification Section -->
+		<div class="mt-12" id="sms-section">
+			<div class="border-t pt-8">
+				{#if features.sms}
+					<PhoneConnectionManager authToken={authStore.accessToken} />
+				{:else}
+					<div
+						class="flex items-center gap-3 rounded-lg border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground"
+					>
+						<Info class="h-4 w-4 shrink-0" aria-hidden="true" />
+						<span>{m['profile.smsUnavailable']()}</span>
 					</div>
 				{/if}
 			</div>

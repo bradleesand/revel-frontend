@@ -5,8 +5,10 @@
 		notificationpreferenceUpdatePreferences,
 		notificationpreferenceUnsubscribe,
 		telegramGetLinkStatus,
+		smsStatus,
 		dashboardDashboardOrganizations
 	} from '$lib/api';
+	import { page } from '$app/stores';
 	import { untrack } from 'svelte';
 	import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
 	import { toast } from 'svelte-sonner';
@@ -29,6 +31,7 @@
 	} from '@lucide/svelte';
 	import ToneTile from '$lib/components/common/ToneTile.svelte';
 	import NotificationTypeSettingsForm from './NotificationTypeSettings.svelte';
+	import SmsChannelToggle from './SmsChannelToggle.svelte';
 	import type {
 		NotificationPreferenceSchema,
 		NotificationTypeSettings,
@@ -92,6 +95,21 @@
 		retry: 1
 	}));
 
+	// SMS is a per-deployment opt-in (features.sms); the toggle needs a verified phone.
+	const smsEnabled = $derived($page.data?.features?.sms === true);
+	const smsStatusQuery = createQuery(() => ({
+		queryKey: ['sms', 'phone-status'],
+		queryFn: async () => {
+			const result = await smsStatus({
+				headers: { Authorization: `Bearer ${authToken}` }
+			});
+			return result.data;
+		},
+		enabled: !!authToken && !isUnsubscribeMode && smsEnabled,
+		staleTime: 5 * 60 * 1000,
+		retry: 1
+	}));
+
 	// Owner or staff of at least one organization? Drives the "you may miss
 	// bookings" warning and whether the ticket_* per-type toggles (which control
 	// staff alerts only) are shown. The backend ORs owner/staff; member is off so
@@ -113,7 +131,7 @@
 	}));
 	const isOrgStaff = $derived(staffQuery.data === true);
 
-	type Channel = 'in_app' | 'email' | 'telegram';
+	type Channel = 'in_app' | 'email' | 'telegram' | 'sms';
 	interface Draft {
 		silence: boolean;
 		reminders: boolean;
@@ -180,6 +198,7 @@
 	const isFormDisabled = $derived(disabled || silenceAll);
 	const showTimePicker = $derived(digestFrequency === 'daily' || digestFrequency === 'weekly');
 	const isTelegramConnected = $derived(telegramStatusQuery.data?.connected ?? false);
+	const isSmsVerified = $derived(smsStatusQuery.data?.verified ?? false);
 
 	// Non-blocking: staff may opt out, but should know what they'd stop hearing.
 	const showStaffWarning = $derived(
@@ -563,6 +582,17 @@
 					/>
 				</div>
 
+				{#if smsEnabled}
+					<Separator />
+					<SmsChannelToggle
+						checked={isChannelEnabled('sms')}
+						disabled={isFormDisabled}
+						verified={isSmsVerified}
+						unsubscribeMode={isUnsubscribeMode}
+						onToggle={() => toggleChannel('sms')}
+					/>
+				{/if}
+
 				{#if validationError && !silenceAll && enabledChannels.length === 0}
 					<p class="text-sm text-destructive" role="alert">
 						{validationError}
@@ -659,6 +689,8 @@
 			{enabledChannels}
 			{isFormDisabled}
 			{isTelegramConnected}
+			{smsEnabled}
+			{isSmsVerified}
 			{authToken}
 		/>
 	{/if}

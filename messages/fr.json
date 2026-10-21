@@ -3248,7 +3248,11 @@
 		"alwaysOn": "Toujours actif",
 		"alwaysOnDescription": "Envoyé quel que soit ton choix ici, car cela concerne ton propre achat ou ton compte.",
 		"staffWarningTitle": "Tu risques de manquer des réservations et des demandes",
-		"staffWarning": "Tu es propriétaire ou membre de l'équipe d'une organisation. Avec ces réglages, tu risques de ne pas être prévenu des nouveaux billets, annulations et remboursements, RSVP, réponses aux questionnaires ou demandes d'adhésion et d'invitation."
+		"staffWarning": "Tu es propriétaire ou membre de l'équipe d'une organisation. Avec ces réglages, tu risques de ne pas être prévenu des nouveaux billets, annulations et remboursements, RSVP, réponses aux questionnaires ou demandes d'adhésion et d'invitation.",
+		"channelSms": "SMS",
+		"channelSmsDescription": "Reçois des rappels et des confirmations par SMS. Disponible uniquement pour certains types de notification.",
+		"smsNotVerified": "Numéro de mobile non vérifié.",
+		"verifyPhone": "Vérifie ton numéro"
 	},
 	"notificationsPage": {
 		"pageTitle": "Notifications",
@@ -5137,7 +5141,8 @@
 		"settingsLink_ariaHidden": "→",
 		"completeToReturn": "Complète ton profil pour continuer. Tu seras redirigé·e après l'enregistrement.",
 		"savedRedirecting": "Profil mis à jour ! Redirection...",
-		"telegramUnavailable": "Telegram n'est pas disponible sur cette instance."
+		"telegramUnavailable": "Telegram n'est pas disponible sur cette instance.",
+		"smsUnavailable": "Les notifications par SMS ne sont pas disponibles sur cette instance."
 	},
 	"profilePage": {
 		"title": "Profil - Revel",
@@ -6137,6 +6142,36 @@
 		"disconnect_title": "Déconnecter Telegram",
 		"disconnect_description": "Veux-tu vraiment déconnecter ton compte Telegram ?",
 		"disconnect_warning": "Tu ne recevras plus de notifications ni de mises à jour d'événements via Telegram."
+	},
+	"sms": {
+		"heading": "Messages texte (SMS)",
+		"description": "Vérifie ton numéro de mobile pour recevoir des rappels d'événements par SMS",
+		"status_verified": "Vérifié",
+		"status_verifiedAs": "Numéro vérifié : {number}",
+		"status_verifiedDescription": "Tu ne recevras des SMS que pour les types de notification que tu actives",
+		"notVerified_description": "Ajoute et vérifie ton numéro de mobile pour recevoir des rappels et des confirmations d'événements par SMS. Seules les notifications que tu choisis sont envoyées.",
+		"buttons_add": "Ajouter un numéro de téléphone",
+		"buttons_remove": "Supprimer",
+		"buttons_cancel": "Annuler",
+		"buttons_sendCode": "Envoyer le code",
+		"buttons_sending": "Envoi...",
+		"buttons_verify": "Vérifier",
+		"buttons_verifying": "Vérification...",
+		"buttons_changeNumber": "Utiliser un autre numéro",
+		"buttons_removeConfirm": "Supprimer",
+		"buttons_removing": "Suppression...",
+		"add_title": "Ajouter un numéro de téléphone",
+		"add_description": "Nous enverrons un code à 6 chiffres à ce numéro pour confirmer qu'il est bien le tien.",
+		"phoneLabel": "Numéro de mobile",
+		"phoneHelp": "Format international, commençant par +",
+		"consent": "En continuant, tu acceptes de recevoir des SMS liés aux événements de la part de Revel à ce numéro. Des frais peuvent s'appliquer. Réponds STOP pour te désinscrire, HELP pour de l'aide.",
+		"codeLabel": "Code de vérification",
+		"codeSentTo": "Saisis le code envoyé au {number}.",
+		"codeError": "Saisis le code à 6 chiffres",
+		"errorGeneric": "Une erreur s'est produite. Réessaie.",
+		"remove_title": "Supprimer le numéro de téléphone",
+		"remove_description": "Veux-tu vraiment supprimer ton numéro de téléphone ?",
+		"remove_warning": "Tu ne recevras plus aucun SMS de Revel."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Conditions d'utilisation"

@@ -30,7 +30,12 @@ export const DEFAULT_FEATURES: Features = {
 	 *   `/api/oauth/*` route answers 404 while the provider has no signing key.
 	 */
 	referral_applications: false,
-	oauth_provider: false
+	oauth_provider: false,
+	/*
+	 * - `sms`: every `/api/sms/*` route answers 404 while `FEATURE_SMS` is off, and
+	 *   the phone card / SMS channel toggles only make sense once a provider exists.
+	 */
+	sms: false
 };
 
 export function resolveFeatures(raw?: Partial<Features> | null): Features {
