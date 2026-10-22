@@ -1770,7 +1770,12 @@
 		"deleteTokenButton": "Eliminar link",
 		"deleteTokenUnnamed": "Link sem nome",
 		"tooManyEmails": "Podes convidar até {max} endereços de cada vez. Introduziste {count}.",
-		"createFailed": "Não foi possível enviar os convites. Tenta novamente."
+		"createFailed": "Não foi possível enviar os convites. Tenta novamente.",
+		"phoneNumbersLabel": "Números de telefone (convidar por SMS)",
+		"phoneNumbersPlaceholder": "+351 912 345 678, um por linha",
+		"phoneNumbersHint": "Formato internacional (+351…). Quem não tem conta recebe um SMS com um link para responder e é adicionado como convidado por telefone.",
+		"invalidPhoneNumbers": "{count} número(s) não estão em formato internacional, ex. +351912345678.",
+		"phoneGuestBadge": "Convite por SMS"
 	},
 	"eventNewPage": {
 		"pageTitle": "Criar evento",
@@ -2968,7 +2973,13 @@
 			"pausedScheduledEndNote": "A subscrição já está agendada para terminar, por isso não é colocada em pausa — continua a ser faturada até ao fim do período atual.",
 			"cancelled": "A adesão foi cancelada. Isto equivale a não ter uma adesão ativa.",
 			"banned": "Membros não podem ver nem participar em nenhuma atividade da organização."
-		}
+		},
+		"phoneLabel": "Número de telemóvel (SMS)",
+		"phonePlaceholder": "+351 912 345 678",
+		"phoneHint": "Guardado como verificado de imediato. Não é enviado nenhum código nem SMS: usa isto com pessoas que conheces. Limpa o campo para remover o número.",
+		"phoneInvalid": "Escreve o número em formato internacional, ex. +351912345678.",
+		"phoneSourceSelf": "Verificado por código SMS",
+		"phoneSourceHost": "Adicionado por um organizador"
 	},
 	"membershipLoss": {
 		"subscriptionCancelledPlan": "A subscrição «{plan}» ({price}) é cancelada de imediato e a faturação recorrente para. Não é emitido nenhum reembolso automaticamente.",
@@ -2987,7 +2998,9 @@
 		"manage": "Gerir",
 		"manageAriaLabel": "Gerir {name}",
 		"staffBadge": "Staff",
-		"memberSince": "Membro desde"
+		"memberSince": "Membro desde",
+		"phoneVerified": "Verificado para SMS",
+		"phoneSetByHost": "adicionado pelo organizador"
 	},
 	"memberStatus": {
 		"active": "Ativo",
@@ -6202,6 +6215,22 @@
 		"remove_title": "Remover número de telefone",
 		"remove_description": "Tens a certeza de que queres remover o teu número de telefone?",
 		"remove_warning": "Deixarás de receber SMS da Revel."
+	},
+	"guestLink": {
+		"title": "Estás convidado",
+		"loading": "A carregar o teu convite…",
+		"invitedAs": "Convite para {name} ({phone})",
+		"rsvpQuestion": "Vens?",
+		"yes": "Sim",
+		"maybe": "Talvez",
+		"no": "Não",
+		"saved": "Obrigado, a tua resposta foi guardada.",
+		"changeAnytime": "Podes mudar a tua resposta a qualquer altura a partir deste link.",
+		"needsTicket": "Este evento precisa de bilhete. Abre a página do evento para arranjar um.",
+		"viewEvent": "Ver evento",
+		"expired": "Este link expirou. Pede ao anfitrião um novo convite.",
+		"notFound": "Este link não é válido.",
+		"failed": "Não foi possível guardar a tua resposta. Tenta outra vez."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Termos de serviço"

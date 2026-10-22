@@ -23,7 +23,7 @@ import { extractErrorMessage } from '$lib/utils/errors';
 import { backendMessage } from '$lib/utils/api-error-detail';
 import { log } from '$lib/server/logger';
 import { computePagination, defaultPagination } from './pagination';
-import { parseInvitationOptions } from './invitation-form';
+import { parseInvitationOptions, parsePhoneNumbers } from './invitation-form';
 
 /**
  * Load invitation requests AND invitations for this event
@@ -280,21 +280,22 @@ export const actions: Actions = {
 		}
 
 		const formData = await request.formData();
-		const emailsRaw = formData.get('emails') as string | null;
+		const emailsRaw = (formData.get('emails') as string | null) ?? '';
 		const invitationOptions = parseInvitationOptions(formData);
-
-		if (!emailsRaw) {
-			return fail(400, { errors: { form: 'Emails are required' } });
-		}
 
 		// Parse emails (comma or newline separated)
 		const emails = emailsRaw
 			.split(/[\n,]/)
 			.map((e) => e.trim())
 			.filter((e) => e.length > 0);
+		// Phone numbers (JSON array; E.164). Only sent when the deployment supports
+		// phone-only guests — the backend answers 400 otherwise.
+		const phoneNumbers = parsePhoneNumbers(formData.get('phone_numbers'));
 
-		if (emails.length === 0) {
-			return fail(400, { errors: { form: 'At least one email is required' } });
+		if (emails.length === 0 && phoneNumbers.length === 0) {
+			return fail(400, {
+				errors: { form: 'At least one email address or phone number is required' }
+			});
 		}
 
 		try {
@@ -303,6 +304,7 @@ export const actions: Actions = {
 				path: { event_id: params.event_id },
 				body: {
 					emails,
+					...(phoneNumbers.length > 0 ? { phone_numbers: phoneNumbers } : {}),
 					...invitationOptions
 				},
 				headers: { Authorization: `Bearer ${accessToken}` }

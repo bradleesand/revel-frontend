@@ -5,7 +5,7 @@
 		PendingEventInvitationListSchema,
 		TicketTierDetailSchema
 	} from '$lib/api/generated/types.gen';
-	import { Search, Mail, UserPlus, Plus, Edit } from '@lucide/svelte';
+	import { Search, Mail, UserPlus, Plus, Edit, Smartphone } from '@lucide/svelte';
 	import { getUserDisplayName } from '$lib/utils/user-display';
 	import { Button } from '$lib/components/ui/button';
 	import UserAvatar from '$lib/components/common/UserAvatar.svelte';
@@ -179,9 +179,19 @@
 		</div>
 	</td>
 
-	<!-- Email -->
+	<!-- Email, or the masked number for a phone-only guest (their email is synthetic) -->
 	<td class="px-4 py-4 text-sm text-muted-foreground">
-		{invitation.user.email || 'N/A'}
+		{#if invitation.phone_guest_number}
+			<span class="inline-flex items-center gap-1.5">
+				<Smartphone class="h-3.5 w-3.5" aria-hidden="true" />
+				{invitation.phone_guest_number}
+				<span class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+					{m['eventInvitationsAdmin.phoneGuestBadge']()}
+				</span>
+			</span>
+		{:else}
+			{invitation.user.email || 'N/A'}
+		{/if}
 	</td>
 {/snippet}
 

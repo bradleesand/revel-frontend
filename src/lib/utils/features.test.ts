@@ -43,7 +43,8 @@ describe('resolveFeatures', () => {
 			llm_evaluation: false,
 			referral_applications: true,
 			oauth_provider: true,
-			sms: true
+			sms: true,
+			sms_phone_guests: true
 		};
 		expect(resolveFeatures(raw)).toEqual(raw);
 	});

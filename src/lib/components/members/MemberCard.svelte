@@ -86,7 +86,13 @@
 			<!-- Additional Info Row -->
 			<div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
 				{#if member.user.phone_number}
-					<span class="truncate">📞 {member.user.phone_number}</span>
+					<span class="truncate">
+						📞 {member.user.phone_number}{#if member.user.phone_verified_at}
+							<span class="ml-1 text-success" title={m['memberCard.phoneVerified']()}>✓</span>
+						{/if}{#if member.user.phone_verification_source === 'host'}
+							<span class="ml-1">({m['memberCard.phoneSetByHost']()})</span>
+						{/if}
+					</span>
 				{/if}
 				{#if member.user.pronouns}
 					<span>({member.user.pronouns})</span>

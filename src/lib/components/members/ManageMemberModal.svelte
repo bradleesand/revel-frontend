@@ -10,7 +10,9 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import { Loader2, UserCog, UserX, AlertTriangle, Ban } from '@lucide/svelte';
+	import { Input } from '$lib/components/ui/input';
+	import { page } from '$app/state';
+	import { Loader2, UserCog, UserX, AlertTriangle, Ban, Smartphone } from '@lucide/svelte';
 	import { formatPlanPrice } from '$lib/utils/subscriptions';
 	import { formatDate } from '$lib/utils/date';
 
@@ -22,6 +24,8 @@
 		onClose: () => void;
 		onUpdateStatus: (status: MembershipStatus) => void;
 		onUpdateTier: (tierId: string | null) => void;
+		/** Host override: set (E.164) or clear (null) the member's SMS number. */
+		onUpdatePhone?: (phoneNumber: string | null) => void;
 		onMakeStaff: () => void;
 		onRemove: () => void;
 		onBlacklist?: (reason: string) => void;
@@ -39,6 +43,7 @@
 		onClose,
 		onUpdateStatus,
 		onUpdateTier,
+		onUpdatePhone,
 		onMakeStaff,
 		onRemove,
 		onBlacklist,
@@ -51,6 +56,13 @@
 	// Local state for form
 	let selectedStatus = $state<MembershipStatus>('active');
 	let selectedTierId = $state<string | null>(null);
+	// Host phone override (features.sms): the organizer types the number; it is
+	// stored verified with no code or consent text sent — see the hint copy.
+	const smsEnabled = $derived(page.data.features?.sms === true && !!onUpdatePhone);
+	let phoneInput = $state('');
+	const E164 = /^\+[1-9]\d{6,14}$/;
+	const normalizedPhone = $derived(phoneInput.replace(/[\s\-().]/g, ''));
+	const phoneInvalid = $derived(normalizedPhone !== '' && !E164.test(normalizedPhone));
 	let showRemoveConfirm = $state(false);
 	let showBlacklistConfirm = $state(false);
 	let showBanConfirm = $state(false);
@@ -61,6 +73,7 @@
 		if (member) {
 			selectedStatus = member.status;
 			selectedTierId = member.tier?.id || null;
+			phoneInput = member.user.phone_number ?? '';
 			showRemoveConfirm = false;
 			showBlacklistConfirm = false;
 			showBanConfirm = false;
@@ -81,7 +94,10 @@
 	// Check if changes were made
 	const hasStatusChanged = $derived(member && selectedStatus !== member.status);
 	const hasTierChanged = $derived(member && selectedTierId !== (member.tier?.id || null));
-	const hasChanges = $derived(hasStatusChanged || hasTierChanged);
+	const hasPhoneChanged = $derived(
+		smsEnabled && !!member && normalizedPhone !== (member.user.phone_number ?? '')
+	);
+	const hasChanges = $derived(hasStatusChanged || hasTierChanged || hasPhoneChanged);
 
 	// Statuses
 	const statuses: MembershipStatus[] = ['active', 'paused', 'cancelled', 'banned'];
@@ -147,6 +163,10 @@
 
 		if (hasTierChanged) {
 			onUpdateTier(selectedTierId);
+		}
+
+		if (hasPhoneChanged && onUpdatePhone && !phoneInvalid) {
+			onUpdatePhone(normalizedPhone === '' ? null : normalizedPhone);
 		}
 	}
 
@@ -355,6 +375,38 @@
 					</Select>
 				</div>
 
+				{#if smsEnabled}
+					<!-- Phone (host override) Section -->
+					<div class="space-y-2">
+						<Label for="member-phone">{m['manageMemberModal.phoneLabel']()}</Label>
+						<Input
+							id="member-phone"
+							type="tel"
+							inputmode="tel"
+							autocomplete="off"
+							placeholder={m['manageMemberModal.phonePlaceholder']()}
+							bind:value={phoneInput}
+							disabled={isProcessing}
+							aria-invalid={phoneInvalid}
+							aria-describedby="member-phone-hint"
+							class={phoneInvalid ? 'border-destructive' : ''}
+						/>
+						<p id="member-phone-hint" class="text-xs text-muted-foreground">
+							{#if phoneInvalid}
+								<span class="text-destructive">{m['manageMemberModal.phoneInvalid']()}</span>
+							{:else if member.user.phone_number && member.user.phone_verified_at}
+								<Smartphone class="mr-1 inline h-3 w-3" aria-hidden="true" />
+								{member.user.phone_verification_source === 'host'
+									? m['manageMemberModal.phoneSourceHost']()
+									: m['manageMemberModal.phoneSourceSelf']()}
+								&middot; {m['manageMemberModal.phoneHint']()}
+							{:else}
+								{m['manageMemberModal.phoneHint']()}
+							{/if}
+						</p>
+					</div>
+				{/if}
+
 				<!-- Save Changes Button / Ban Confirmation -->
 				{#if hasChanges}
 					{#if showBanConfirm && isBanTransition}
@@ -395,7 +447,11 @@
 							</div>
 						</div>
 					{:else}
-						<Button onclick={handleSaveChanges} disabled={isProcessing} class="w-full">
+						<Button
+							onclick={handleSaveChanges}
+							disabled={isProcessing || phoneInvalid}
+							class="w-full"
+						>
 							{#if isUpdating}
 								<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 							{/if}

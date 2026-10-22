@@ -7,6 +7,7 @@
 	} from '$lib/api/generated/types.gen';
 	import type { SvelteSet } from 'svelte/reactivity';
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
 	import { Mail, Edit } from '@lucide/svelte';
 	import { getUserDisplayName } from '$lib/utils/user-display';
 	import { Button } from '$lib/components/ui/button';
@@ -50,6 +51,22 @@
 	const MAX_INVITE_EMAILS = 500;
 	const tooManyEmails = $derived(emailTags.length > MAX_INVITE_EMAILS);
 
+	// Invite by phone number (phone-only guests): a per-deployment capability
+	// (`features.sms_phone_guests`). Numbers are normalised to E.164 client-side so
+	// the organizer sees a bad one before submitting; the backend validates again.
+	const phoneInvitesEnabled = $derived(page.data.features?.sms_phone_guests === true);
+	let phoneNumbersRaw = $state('');
+	const E164 = /^\+[1-9]\d{6,14}$/;
+	const phoneNumbers = $derived(
+		phoneNumbersRaw
+			.split(/[\n,;]/)
+			.map((entry) => entry.replace(/[\s\-().]/g, ''))
+			.filter((entry) => entry.length > 0)
+	);
+	const invalidPhoneNumbers = $derived(phoneNumbers.filter((n) => !E164.test(n)));
+	const noRecipients = $derived(emailTags.length === 0 && phoneNumbers.length === 0);
+	const createBlocked = $derived(tooManyEmails || invalidPhoneNumbers.length > 0 || noRecipients);
+
 	// Edit invitation state
 	let showEditDialog = $state(false);
 	let editingInvitation = $state<
@@ -86,6 +103,7 @@
 		emailTags = [];
 		createTierIds = [];
 		createError = null;
+		phoneNumbersRaw = '';
 	}
 
 	export function openCreate() {
@@ -178,7 +196,7 @@
 			method="POST"
 			action="?/createInvitations"
 			use:enhance={({ cancel }) => {
-				if (tooManyEmails) {
+				if (createBlocked) {
 					cancel();
 					return;
 				}
@@ -207,6 +225,7 @@
 			<div class="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
 				<!-- Hidden inputs for form submission -->
 				<input type="hidden" name="emails" value={invitationEmails} />
+				<input type="hidden" name="phone_numbers" value={JSON.stringify(phoneNumbers)} />
 				<input type="hidden" name="tier_ids" value={JSON.stringify(createTierIds)} />
 
 				<!-- Email addresses with tag input -->
@@ -225,6 +244,34 @@
 							count: emailTags.length
 						})}
 					</p>
+				{/if}
+
+				{#if phoneInvitesEnabled}
+					<!-- Phone numbers: people without an account become phone-only guests -->
+					<div>
+						<label for="phone_numbers" class="block text-sm font-medium">
+							{m['eventInvitationsAdmin.phoneNumbersLabel']()}
+						</label>
+						<textarea
+							id="phone_numbers"
+							bind:value={phoneNumbersRaw}
+							placeholder={m['eventInvitationsAdmin.phoneNumbersPlaceholder']()}
+							rows="2"
+							aria-invalid={invalidPhoneNumbers.length > 0}
+							aria-describedby="phone_numbers_hint"
+							class="mt-1 w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+						></textarea>
+						<p id="phone_numbers_hint" class="mt-1 text-xs text-muted-foreground">
+							{m['eventInvitationsAdmin.phoneNumbersHint']()}
+						</p>
+						{#if invalidPhoneNumbers.length > 0}
+							<p class="mt-1 text-sm font-medium text-destructive" role="alert">
+								{m['eventInvitationsAdmin.invalidPhoneNumbers']({
+									count: invalidPhoneNumbers.length
+								})}
+							</p>
+						{/if}
+					</div>
 				{/if}
 
 				<!-- Custom message -->
@@ -271,7 +318,7 @@
 				>
 					{m['eventInvitationsAdmin.cancel']()}
 				</Button>
-				<Button type="submit" disabled={tooManyEmails}>
+				<Button type="submit" disabled={createBlocked}>
 					<Mail class="mr-2 h-4 w-4" aria-hidden="true" />
 					{m['eventInvitationsAdmin.sendInvitations']()}
 				</Button>

@@ -1770,7 +1770,12 @@
 		"deleteTokenButton": "Delete Link",
 		"deleteTokenUnnamed": "Unnamed Link",
 		"tooManyEmails": "You can invite up to {max} addresses at once. You've entered {count}.",
-		"createFailed": "Couldn't send the invitations. Please try again."
+		"createFailed": "Couldn't send the invitations. Please try again.",
+		"phoneNumbersLabel": "Phone numbers (invite by text)",
+		"phoneNumbersPlaceholder": "+1 555 123 4567, one per line",
+		"phoneNumbersHint": "International format (+1…). People without an account get a text with an RSVP link and are added as phone-only guests.",
+		"invalidPhoneNumbers": "{count} phone number(s) are not in international format, e.g. +15551234567.",
+		"phoneGuestBadge": "Text invite"
 	},
 	"eventNewPage": {
 		"pageTitle": "Create Event",
@@ -2968,7 +2973,13 @@
 			"pausedScheduledEndNote": "Their subscription is already scheduled to end, so it is not paused — it keeps billing until the current period closes.",
 			"cancelled": "Membership has been cancelled. This is equivalent to not having an active membership.",
 			"banned": "Members cannot view or participate in any organization activities."
-		}
+		},
+		"phoneLabel": "Mobile number (SMS)",
+		"phonePlaceholder": "+1 555 123 4567",
+		"phoneHint": "Saved as verified right away. No code or text is sent — use this for people you know. Clear the field to remove the number.",
+		"phoneInvalid": "Enter the number in international format, e.g. +15551234567.",
+		"phoneSourceSelf": "Verified by text code",
+		"phoneSourceHost": "Set by an organizer"
 	},
 	"membershipLoss": {
 		"subscriptionCancelledPlan": "Their {plan} subscription ({price}) is cancelled immediately and recurring billing stops. No refund is issued automatically.",
@@ -2987,7 +2998,9 @@
 		"manage": "Manage",
 		"manageAriaLabel": "Manage {name}",
 		"staffBadge": "Staff",
-		"memberSince": "Member since"
+		"memberSince": "Member since",
+		"phoneVerified": "Verified for texts",
+		"phoneSetByHost": "set by organizer"
 	},
 	"memberStatus": {
 		"active": "Active",
@@ -6202,6 +6215,22 @@
 		"remove_title": "Remove phone number",
 		"remove_description": "Are you sure you want to remove your phone number?",
 		"remove_warning": "You will no longer receive any text messages from Revel."
+	},
+	"guestLink": {
+		"title": "You're invited",
+		"loading": "Loading your invitation…",
+		"invitedAs": "Invitation for {name} ({phone})",
+		"rsvpQuestion": "Are you coming?",
+		"yes": "Yes",
+		"maybe": "Maybe",
+		"no": "No",
+		"saved": "Thanks, your answer is saved.",
+		"changeAnytime": "You can change your answer any time from this link.",
+		"needsTicket": "This event needs a ticket. Open the event page to get one.",
+		"viewEvent": "View event",
+		"expired": "This link has expired. Ask the host for a new invitation.",
+		"notFound": "This link isn't valid.",
+		"failed": "Couldn't save your answer. Please try again."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Terms of Service"

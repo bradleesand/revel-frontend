@@ -125,11 +125,14 @@
 		mutationFn: async ({
 			member,
 			status,
-			tierId
+			tierId,
+			phoneNumber
 		}: {
 			member: OrganizationMemberSchema;
 			status?: MembershipStatus;
 			tierId?: string | null;
+			/** Host override: E.164 to set, null to clear, undefined to leave alone. */
+			phoneNumber?: string | null;
 		}) => {
 			const userId = member.user.id;
 			if (!userId) {
@@ -140,7 +143,10 @@
 				path: { slug: organization.slug, user_id: userId },
 				body: {
 					status: status,
-					tier_id: tierId
+					tier_id: tierId,
+					// Omitted (not null) unless the organizer touched it: the backend treats
+					// an explicit null as "clear the number".
+					...(phoneNumber !== undefined ? { phone_number: phoneNumber } : {})
 				},
 				headers: { Authorization: `Bearer ${accessToken}` }
 			});
@@ -268,6 +274,12 @@
 	function handleUpdateMemberTier(tierId: string | null) {
 		if (memberToManage) {
 			updateMemberMutation.mutate({ member: memberToManage, tierId });
+		}
+	}
+
+	function handleUpdateMemberPhone(phoneNumber: string | null) {
+		if (memberToManage) {
+			updateMemberMutation.mutate({ member: memberToManage, phoneNumber });
 		}
 	}
 
@@ -423,6 +435,7 @@
 	onClose={handleCloseManageMemberModal}
 	onUpdateStatus={handleUpdateMemberStatus}
 	onUpdateTier={handleUpdateMemberTier}
+	onUpdatePhone={handleUpdateMemberPhone}
 	onMakeStaff={handleMakeStaffFromModal}
 	onRemove={handleRemoveMemberFromModal}
 	onBlacklist={handleBlacklistMemberFromModal}

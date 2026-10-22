@@ -34,8 +34,11 @@ export const DEFAULT_FEATURES: Features = {
 	/*
 	 * - `sms`: every `/api/sms/*` route answers 404 while `FEATURE_SMS` is off, and
 	 *   the phone card / SMS channel toggles only make sense once a provider exists.
+	 * - `sms_phone_guests`: inviting by phone number and the `/g/<code>` guest page
+	 *   need `SMS_ONLY_EMAIL_DOMAIN` on the backend; the endpoints 400/404 otherwise.
 	 */
-	sms: false
+	sms: false,
+	sms_phone_guests: false
 };
 
 export function resolveFeatures(raw?: Partial<Features> | null): Features {

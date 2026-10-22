@@ -1770,7 +1770,12 @@
 		"deleteTokenButton": "Link löschen",
 		"deleteTokenUnnamed": "Unbenannter Link",
 		"tooManyEmails": "Du kannst bis zu {max} Adressen auf einmal einladen. Du hast {count} eingegeben.",
-		"createFailed": "Die Einladungen konnten nicht gesendet werden. Bitte versuche es noch einmal."
+		"createFailed": "Die Einladungen konnten nicht gesendet werden. Bitte versuche es noch einmal.",
+		"phoneNumbersLabel": "Telefonnummern (per SMS einladen)",
+		"phoneNumbersPlaceholder": "+49 151 2345678, eine pro Zeile",
+		"phoneNumbersHint": "Internationales Format (+49…). Wer kein Konto hat, bekommt eine SMS mit einem Antwortlink und wird als Telefon-Gast hinzugefügt.",
+		"invalidPhoneNumbers": "{count} Telefonnummer(n) sind nicht im internationalen Format, z. B. +4915112345678.",
+		"phoneGuestBadge": "SMS-Einladung"
 	},
 	"eventNewPage": {
 		"pageTitle": "Veranstaltung erstellen",
@@ -2968,7 +2973,13 @@
 			"pausedScheduledEndNote": "Das Abonnement ist bereits zur Kündigung vorgemerkt und wird deshalb nicht pausiert – es wird bis zum Ende des laufenden Zeitraums weiter abgerechnet.",
 			"cancelled": "Die Mitgliedschaft wurde gekündigt. Dies entspricht keiner aktiven Mitgliedschaft.",
 			"banned": "Mitglieder können keine Organisationsaktivitäten ansehen oder daran teilnehmen."
-		}
+		},
+		"phoneLabel": "Handynummer (SMS)",
+		"phonePlaceholder": "+49 151 2345678",
+		"phoneHint": "Wird sofort als bestätigt gespeichert. Es wird kein Code und keine SMS verschickt – nur für Leute, die du kennst. Feld leeren, um die Nummer zu entfernen.",
+		"phoneInvalid": "Gib die Nummer im internationalen Format ein, z. B. +4915112345678.",
+		"phoneSourceSelf": "Per SMS-Code bestätigt",
+		"phoneSourceHost": "Von einem Veranstalter eingetragen"
 	},
 	"membershipLoss": {
 		"subscriptionCancelledPlan": "Das Mitgliedschafts-Abonnement „{plan}“ ({price}) wird sofort gekündigt und die wiederkehrende Abrechnung endet. Es wird keine Erstattung automatisch ausgelöst.",
@@ -2987,7 +2998,9 @@
 		"manage": "Verwalten",
 		"manageAriaLabel": "{name} verwalten",
 		"staffBadge": "Personal",
-		"memberSince": "Mitglied seit"
+		"memberSince": "Mitglied seit",
+		"phoneVerified": "Für SMS bestätigt",
+		"phoneSetByHost": "vom Veranstalter eingetragen"
 	},
 	"memberStatus": {
 		"active": "Aktiv",
@@ -6202,6 +6215,22 @@
 		"remove_title": "Telefonnummer entfernen",
 		"remove_description": "Möchtest du deine Telefonnummer wirklich entfernen?",
 		"remove_warning": "Du erhältst dann keine SMS mehr von Revel."
+	},
+	"guestLink": {
+		"title": "Du bist eingeladen",
+		"loading": "Einladung wird geladen…",
+		"invitedAs": "Einladung für {name} ({phone})",
+		"rsvpQuestion": "Kommst du?",
+		"yes": "Ja",
+		"maybe": "Vielleicht",
+		"no": "Nein",
+		"saved": "Danke, deine Antwort ist gespeichert.",
+		"changeAnytime": "Du kannst deine Antwort über diesen Link jederzeit ändern.",
+		"needsTicket": "Für dieses Event brauchst du ein Ticket. Öffne die Eventseite, um eins zu holen.",
+		"viewEvent": "Event ansehen",
+		"expired": "Dieser Link ist abgelaufen. Bitte den Gastgeber um eine neue Einladung.",
+		"notFound": "Dieser Link ist ungültig.",
+		"failed": "Deine Antwort konnte nicht gespeichert werden. Bitte versuch es noch mal."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Nutzungsbedingungen"

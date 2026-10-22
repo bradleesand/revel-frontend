@@ -9,7 +9,8 @@ const SMS_ELIGIBLE_TYPES: ReadonlySet<string> = new Set<NotificationType>([
 	'event_reminder',
 	'ticket_created',
 	'event_cancelled',
-	'waitlist_spot_available'
+	'waitlist_spot_available',
+	'invitation_received'
 ]);
 
 export function isSmsEligibleType(type: string): boolean {

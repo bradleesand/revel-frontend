@@ -40,3 +40,20 @@ export function parseInvitationOptions(formData: FormData): InvitationOptions {
 		tier_ids: tierIds
 	};
 }
+
+/**
+ * Parse the hidden `phone_numbers` field (a JSON array of E.164 strings written by
+ * the create dialog). Anything malformed is treated as "no phone numbers" rather
+ * than failing the whole request — the dialog already validated the list.
+ */
+export function parsePhoneNumbers(raw: FormDataEntryValue | null): string[] {
+	if (typeof raw !== 'string' || raw.trim() === '') return [];
+	try {
+		const parsed: unknown = JSON.parse(raw);
+		return Array.isArray(parsed)
+			? parsed.filter((v): v is string => typeof v === 'string' && v.trim() !== '')
+			: [];
+	} catch {
+		return [];
+	}
+}
