@@ -8,16 +8,24 @@ export interface UserDisplayInfo {
 	first_name?: string | null;
 	last_name?: string | null;
 	email?: string | null;
+	/** Backend-computed name; for a phone-only guest this is their masked number. */
+	display_name?: string | null;
 }
 
 /**
  * Get a display-friendly name for a user, using the best available field.
- * Priority: preferred_name > first_name + last_name > first_name > email > fallback
+ * Priority: preferred_name > first_name + last_name > first_name > display_name > email > fallback
+ *
+ * `display_name` sits before `email` on purpose: the backend already applies the same
+ * name chain and then, for a phone-only guest, falls back to the MASKED number — whereas
+ * the raw email of such a guest is a synthetic `<digits>@sms.…` address that would print
+ * the whole number in the clear.
  */
 export function getUserDisplayName(user: UserDisplayInfo, fallback = 'Unknown User'): string {
 	if (user.preferred_name) return user.preferred_name;
 	if (user.first_name && user.last_name) return `${user.first_name} ${user.last_name}`;
 	if (user.first_name) return user.first_name;
+	if (user.display_name) return user.display_name;
 	if (user.email) return user.email;
 	return fallback;
 }

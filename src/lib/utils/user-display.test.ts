@@ -41,3 +41,18 @@ describe('getUserDisplayName', () => {
 		expect(getUserDisplayName(base)).toBe('ann@example.com');
 	});
 });
+
+describe('getUserDisplayName: phone-only guests', () => {
+	it('prefers the backend display_name (masked number) over a synthetic email', () => {
+		expect(
+			getUserDisplayName({
+				email: '15557770001@sms.events.example.com',
+				display_name: '+1••••••0001'
+			})
+		).toBe('+1••••••0001');
+	});
+
+	it('still uses real names first', () => {
+		expect(getUserDisplayName({ first_name: 'Sam', display_name: '+1••••••0001' })).toBe('Sam');
+	});
+});
