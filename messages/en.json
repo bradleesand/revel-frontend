@@ -5716,7 +5716,14 @@
 		"demoNudgeRegisterAnyway": "Register anyway",
 		"referralInviteTitle": "You've been invited to the referral program",
 		"referralInviteBody": "Create your account with this email and your referral code {code} is activated right away.",
-		"referralInviteEmailLocked": "This address comes from your invitation and cannot be changed."
+		"referralInviteEmailLocked": "This address comes from your invitation and cannot be changed.",
+		"guestLinkTitle": "You were invited by text",
+		"guestLinkBody": "Signing up links your invitation to {event} and the number {phone} to this account. No code needed — the text already reached you.",
+		"guestLinkPhoneLocked": "From your invitation. It's verified the moment your account is created.",
+		"phoneLabel": "Mobile number",
+		"phoneOptional": "(optional)",
+		"phonePlaceholder": "+1 555 123 4567",
+		"phoneHint": "Invited by text before? Enter the same number: we'll text you a code, and your RSVPs move to this account once you enter it."
 	},
 	"requestInvitationButton": {
 		"mustBeLoggedIn": "You must be logged in to request an invitation",
@@ -6230,7 +6237,9 @@
 		"viewEvent": "View event",
 		"expired": "This link has expired. Ask the host for a new invitation.",
 		"notFound": "This link isn't valid.",
-		"failed": "Couldn't save your answer. Please try again."
+		"failed": "Couldn't save your answer. Please try again.",
+		"createAccount": "Create an account",
+		"createAccountHint": "Want to see your invitations and tickets in one place? An account keeps this RSVP and verifies your number automatically."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Terms of Service"

@@ -13,6 +13,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import EmailTagInput from '$lib/components/forms/EmailTagInput.svelte';
+	import { isE164, normalizePhoneInput } from '$lib/utils/phone';
 
 	interface Props {
 		organizationSlug: string;
@@ -56,14 +57,14 @@
 	// the organizer sees a bad one before submitting; the backend validates again.
 	const phoneInvitesEnabled = $derived(page.data.features?.sms_phone_guests === true);
 	let phoneNumbersRaw = $state('');
-	const E164 = /^\+[1-9]\d{6,14}$/;
+	const defaultPrefix = $derived(page.data.features?.sms_default_country_prefix || null);
 	const phoneNumbers = $derived(
 		phoneNumbersRaw
 			.split(/[\n,;]/)
-			.map((entry) => entry.replace(/[\s\-().]/g, ''))
+			.map((entry) => normalizePhoneInput(entry, defaultPrefix))
 			.filter((entry) => entry.length > 0)
 	);
-	const invalidPhoneNumbers = $derived(phoneNumbers.filter((n) => !E164.test(n)));
+	const invalidPhoneNumbers = $derived(phoneNumbers.filter((n) => !isE164(n)));
 	const noRecipients = $derived(emailTags.length === 0 && phoneNumbers.length === 0);
 	const createBlocked = $derived(tooManyEmails || invalidPhoneNumbers.length > 0 || noRecipients);
 

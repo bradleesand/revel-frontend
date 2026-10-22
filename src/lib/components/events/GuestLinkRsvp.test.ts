@@ -86,6 +86,12 @@ describe('GuestLinkRsvp', () => {
 		expect(screen.getByRole('button', { name: /Yes/ })).toHaveAttribute('aria-pressed', 'true');
 	});
 
+	it('offers to create an account with the link code attached', async () => {
+		renderPage();
+		const cta = await screen.findByRole('link', { name: 'Create an account' });
+		expect(cta).toHaveAttribute('href', expect.stringContaining(`/register?g=${link.code}`));
+	});
+
 	it('hides the buttons when the event needs a ticket', async () => {
 		vi.mocked(eventpublicguestlinkGetGuestLink).mockResolvedValue(
 			ok({ ...link, can_rsvp: false }) as unknown as LinkResult

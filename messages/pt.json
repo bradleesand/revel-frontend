@@ -5716,7 +5716,14 @@
 		"demoNudgeRegisterAnyway": "Registar mesmo assim",
 		"referralInviteTitle": "Tens um convite para o programa de indicações",
 		"referralInviteBody": "Cria a tua conta com este e-mail e o teu código de indicação {code} fica ativo de imediato.",
-		"referralInviteEmailLocked": "Este endereço vem do teu convite e não pode ser alterado."
+		"referralInviteEmailLocked": "Este endereço vem do teu convite e não pode ser alterado.",
+		"guestLinkTitle": "Foste convidado por SMS",
+		"guestLinkBody": "Ao registares-te, o teu convite para {event} e o número {phone} ficam ligados a esta conta. Sem código: o SMS já te chegou.",
+		"guestLinkPhoneLocked": "Do teu convite. Fica verificado assim que a conta é criada.",
+		"phoneLabel": "Número de telemóvel",
+		"phoneOptional": "(opcional)",
+		"phonePlaceholder": "+351 912 345 678",
+		"phoneHint": "Já foste convidado por SMS? Escreve o mesmo número: enviamos-te um código e as tuas respostas passam para esta conta assim que o introduzires."
 	},
 	"requestInvitationButton": {
 		"mustBeLoggedIn": "Tens de ter sessão iniciada para pedir um convite",
@@ -6230,7 +6237,9 @@
 		"viewEvent": "Ver evento",
 		"expired": "Este link expirou. Pede ao anfitrião um novo convite.",
 		"notFound": "Este link não é válido.",
-		"failed": "Não foi possível guardar a tua resposta. Tenta outra vez."
+		"failed": "Não foi possível guardar a tua resposta. Tenta outra vez.",
+		"createAccount": "Criar uma conta",
+		"createAccountHint": "Queres ver os teus convites e bilhetes num só sítio? Uma conta guarda esta resposta e verifica o teu número automaticamente."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Termos de serviço"

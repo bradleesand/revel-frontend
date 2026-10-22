@@ -29,7 +29,14 @@ export const registerSchema = z
 		confirmPassword: z.string(),
 		acceptTerms: z.boolean().refine((val) => val === true, {
 			message: 'You must accept the terms and privacy policy'
-		})
+		}),
+		// Optional mobile number (already normalised to E.164 by the action); '' = not given.
+		phone: z
+			.string()
+			.optional()
+			.refine((v) => !v || /^\+[1-9]\d{6,14}$/.test(v), {
+				message: 'Enter the number in international format, e.g. +15551234567'
+			})
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: 'Passwords do not match',

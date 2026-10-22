@@ -15,6 +15,7 @@
 	import { Loader2, UserCog, UserX, AlertTriangle, Ban, Smartphone } from '@lucide/svelte';
 	import { formatPlanPrice } from '$lib/utils/subscriptions';
 	import { formatDate } from '$lib/utils/date';
+	import { isE164, normalizePhoneInput } from '$lib/utils/phone';
 
 	interface Props {
 		member: OrganizationMemberSchema | null;
@@ -60,9 +61,9 @@
 	// stored verified with no code or consent text sent — see the hint copy.
 	const smsEnabled = $derived(page.data.features?.sms === true && !!onUpdatePhone);
 	let phoneInput = $state('');
-	const E164 = /^\+[1-9]\d{6,14}$/;
-	const normalizedPhone = $derived(phoneInput.replace(/[\s\-().]/g, ''));
-	const phoneInvalid = $derived(normalizedPhone !== '' && !E164.test(normalizedPhone));
+	const defaultPrefix = $derived(page.data.features?.sms_default_country_prefix || null);
+	const normalizedPhone = $derived(normalizePhoneInput(phoneInput, defaultPrefix));
+	const phoneInvalid = $derived(normalizedPhone !== '' && !isE164(normalizedPhone));
 	let showRemoveConfirm = $state(false);
 	let showBlacklistConfirm = $state(false);
 	let showBanConfirm = $state(false);

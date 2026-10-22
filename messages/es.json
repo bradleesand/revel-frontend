@@ -5716,7 +5716,14 @@
 		"demoNudgeRegisterAnyway": "Registrarme de todos modos",
 		"referralInviteTitle": "Tienes una invitación al programa de referidos",
 		"referralInviteBody": "Crea tu cuenta con este correo y tu código de referido {code} se activa al instante.",
-		"referralInviteEmailLocked": "Esta dirección viene de tu invitación y no se puede cambiar."
+		"referralInviteEmailLocked": "Esta dirección viene de tu invitación y no se puede cambiar.",
+		"guestLinkTitle": "Te invitaron por SMS",
+		"guestLinkBody": "Al registrarte, tu invitación a {event} y el número {phone} quedan vinculados a esta cuenta. Sin código: el SMS ya te llegó.",
+		"guestLinkPhoneLocked": "De tu invitación. Queda verificado en cuanto se crea tu cuenta.",
+		"phoneLabel": "Número de móvil",
+		"phoneOptional": "(opcional)",
+		"phonePlaceholder": "+34 612 345 678",
+		"phoneHint": "¿Te invitaron antes por SMS? Escribe el mismo número: te enviaremos un código y tus confirmaciones pasarán a esta cuenta cuando lo introduzcas."
 	},
 	"requestInvitationButton": {
 		"mustBeLoggedIn": "Debes haber iniciado sesión para solicitar una invitación",
@@ -6230,7 +6237,9 @@
 		"viewEvent": "Ver evento",
 		"expired": "Este enlace ha caducado. Pide al anfitrión una nueva invitación.",
 		"notFound": "Este enlace no es válido.",
-		"failed": "No se pudo guardar tu respuesta. Inténtalo de nuevo."
+		"failed": "No se pudo guardar tu respuesta. Inténtalo de nuevo.",
+		"createAccount": "Crear una cuenta",
+		"createAccountHint": "¿Quieres ver tus invitaciones y entradas en un solo sitio? Una cuenta conserva esta confirmación y verifica tu número automáticamente."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Términos del servicio"

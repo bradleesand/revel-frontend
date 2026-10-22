@@ -2,12 +2,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('$lib/api/generated/sdk.gen', () => ({
 	accountRegister: vi.fn(),
-	referralGetInvitation: vi.fn()
+	referralGetInvitation: vi.fn(),
+	eventpublicguestlinkGetGuestLink: vi.fn()
 }));
 vi.mock('$lib/server/features', () => ({
 	getDemoMode: vi.fn().mockResolvedValue(false),
 	getSsoProviders: vi.fn().mockResolvedValue([]),
-	getTurnstileSiteKey: vi.fn().mockResolvedValue(null)
+	getTurnstileSiteKey: vi.fn().mockResolvedValue(null),
+	getFeatures: vi.fn().mockResolvedValue({ sms: false, sms_default_country_prefix: '' })
 }));
 vi.mock('$lib/server/logger', () => ({
 	log: { debug: vi.fn(), warning: vi.fn(), error: vi.fn() }
@@ -136,5 +138,62 @@ describe('register action and Turnstile', () => {
 		expect(result.status).toBe(400);
 		expect(result.data.errors.form).toContain('Bot verification failed');
 		expect(result.data.errors).not.toHaveProperty('email');
+	});
+});
+
+describe('register action: texted invitation link and typed phone number', () => {
+	it('forwards the guest link code from ?g= and never a phone number', async () => {
+		const { eventpublicguestlinkGetGuestLink } = await import('$lib/api/generated/sdk.gen');
+		vi.mocked(eventpublicguestlinkGetGuestLink).mockResolvedValue({
+			data: { phone_number_masked: '+1••••••0001', display_name: 'Sam', event: { name: 'Dinner' } },
+			error: undefined,
+			response: { ok: true, status: 200 }
+		} as never);
+
+		await actionRedirect('?g=Abc23Defgh');
+
+		const body = mockedRegister.mock.calls[0]?.[0]?.body as Record<string, unknown>;
+		expect(body.guest_link_code).toBe('Abc23Defgh');
+		expect(body).not.toHaveProperty('phone_number');
+	});
+
+	it('ignores a malformed ?g= value', async () => {
+		await actionRedirect('?g=../etc');
+		const body = mockedRegister.mock.calls[0]?.[0]?.body as Record<string, unknown>;
+		expect(body).not.toHaveProperty('guest_link_code');
+	});
+
+	it('normalises a typed number with the default country code when SMS is on', async () => {
+		const { getFeatures } = await import('$lib/server/features');
+		vi.mocked(getFeatures).mockResolvedValue({
+			sms: true,
+			sms_default_country_prefix: '+1'
+		} as never);
+		const args = actionArgs('');
+		const formData = await args.request.clone().formData();
+		formData.set('phone', '(555) 777-0001');
+		args.request = new Request(args.url, { method: 'POST', body: formData });
+
+		await actions.default(args).catch(() => undefined);
+
+		const body = mockedRegister.mock.calls[0]?.[0]?.body as Record<string, unknown>;
+		expect(body.phone_number).toBe('+15557770001');
+	});
+
+	it('drops the typed number when SMS is off', async () => {
+		const { getFeatures } = await import('$lib/server/features');
+		vi.mocked(getFeatures).mockResolvedValue({
+			sms: false,
+			sms_default_country_prefix: ''
+		} as never);
+		const args = actionArgs('');
+		const formData = await args.request.clone().formData();
+		formData.set('phone', '5557770001');
+		args.request = new Request(args.url, { method: 'POST', body: formData });
+
+		await actions.default(args).catch(() => undefined);
+
+		const body = mockedRegister.mock.calls[0]?.[0]?.body as Record<string, unknown>;
+		expect(body).not.toHaveProperty('phone_number');
 	});
 });

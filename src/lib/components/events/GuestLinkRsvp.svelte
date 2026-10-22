@@ -76,6 +76,11 @@
 
 	const location = $derived(link?.event.venue?.name ?? link?.event.city?.name ?? null);
 	const eventHref = $derived(link ? resolve('/(public)/events/[id]', { id: link.event.id }) : null);
+	// Signing up from here carries the code along: the backend merges this guest into the
+	// new account and marks the number verified (the text already proved possession).
+	const registerHref = $derived(
+		`${resolve('/(public)/register', {})}?g=${encodeURIComponent(code)}`
+	);
 </script>
 
 {#if linkQuery.isLoading}
@@ -159,10 +164,18 @@
 			</Alert>
 		{/if}
 
-		{#if eventHref}
-			<Button variant="link" href={eventHref} class="h-auto p-0"
-				>{m['guestLink.viewEvent']()}</Button
-			>
-		{/if}
+		<div class="space-y-2 border-t border-border pt-4">
+			<p class="text-sm text-muted-foreground">{m['guestLink.createAccountHint']()}</p>
+			<div class="flex flex-wrap items-center gap-3">
+				<Button variant="secondary" size="sm" href={registerHref}
+					>{m['guestLink.createAccount']()}</Button
+				>
+				{#if eventHref}
+					<Button variant="link" href={eventHref} class="h-auto p-0"
+						>{m['guestLink.viewEvent']()}</Button
+					>
+				{/if}
+			</div>
+		</div>
 	</div>
 {/if}

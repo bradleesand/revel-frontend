@@ -5686,7 +5686,14 @@
 		"demoNudgeRegisterAnyway": "S'inscrire quand même",
 		"referralInviteTitle": "Tu as une invitation au programme de parrainage",
 		"referralInviteBody": "Crée ton compte avec cette adresse e-mail et ton code de parrainage {code} est activé tout de suite.",
-		"referralInviteEmailLocked": "Cette adresse vient de ton invitation et ne peut pas être modifiée."
+		"referralInviteEmailLocked": "Cette adresse vient de ton invitation et ne peut pas être modifiée.",
+		"guestLinkTitle": "Tu as été invité·e par SMS",
+		"guestLinkBody": "En t'inscrivant, ton invitation à {event} et le numéro {phone} sont rattachés à ce compte. Pas de code : le SMS t'est déjà parvenu.",
+		"guestLinkPhoneLocked": "Issu de ton invitation. Il est vérifié dès la création de ton compte.",
+		"phoneLabel": "Numéro de mobile",
+		"phoneOptional": "(facultatif)",
+		"phonePlaceholder": "+33 6 12 34 56 78",
+		"phoneHint": "Déjà invité·e par SMS ? Saisis le même numéro : on t'envoie un code, et tes réponses passent sur ce compte dès que tu l'entres."
 	},
 	"requestInvitationButton": {
 		"mustBeLoggedIn": "Tu dois te connecter pour demander une invitation",
@@ -6200,7 +6207,9 @@
 		"viewEvent": "Voir l'événement",
 		"expired": "Ce lien a expiré. Demande une nouvelle invitation à l'hôte.",
 		"notFound": "Ce lien n'est pas valide.",
-		"failed": "Impossible d'enregistrer ta réponse. Réessaie."
+		"failed": "Impossible d'enregistrer ta réponse. Réessaie.",
+		"createAccount": "Créer un compte",
+		"createAccountHint": "Envie de voir tes invitations et billets au même endroit ? Un compte conserve cette réponse et vérifie ton numéro automatiquement."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Conditions d'utilisation"

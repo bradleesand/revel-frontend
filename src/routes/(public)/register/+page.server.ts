@@ -1,11 +1,21 @@
 import { fail, redirect, isRedirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { registerSchema } from '$lib/schemas/auth';
-import { accountRegister, referralGetInvitation } from '$lib/api/generated/sdk.gen';
+import {
+	accountRegister,
+	eventpublicguestlinkGetGuestLink,
+	referralGetInvitation
+} from '$lib/api/generated/sdk.gen';
 import { isReferralInviteId } from '$lib/schemas/referral';
 import { extractErrorMessage } from '$lib/utils/errors';
 import { registrationReturnUrl } from '$lib/utils/safe-redirect';
-import { getDemoMode, getSsoProviders, getTurnstileSiteKey } from '$lib/server/features';
+import {
+	getDemoMode,
+	getFeatures,
+	getSsoProviders,
+	getTurnstileSiteKey
+} from '$lib/server/features';
+import { normalizePhoneInput } from '$lib/utils/phone';
 import { log } from '$lib/server/logger';
 import { buildSeo } from '$lib/seo';
 import { resolveLang } from '$lib/seo/server';
@@ -25,6 +35,7 @@ export const load: PageServerLoad = async ({ fetch, cookies, url, request }) => 
 	return {
 		referralCodeFromCookie: cookies.get('referral_code') || '',
 		referralInvite: await loadReferralInvite(fetch, url),
+		guestLink: await loadGuestLink(fetch, url),
 		demo,
 		ssoProviders,
 		turnstileSiteKey,
@@ -65,6 +76,44 @@ async function loadReferralInvite(
 	}
 }
 
+/**
+ * `?g=<code>` — a texted phone-guest invitation link (`/g/<code>`). Resolved here
+ * only to show the invitee what signing up will link (masked number, event); the
+ * CODE is what gets posted, re-read from the same query string in the action, and
+ * the backend does the merge + verification itself. A stale/unknown code degrades
+ * silently to the ordinary form, exactly like a referral invite.
+ */
+const GUEST_LINK_CODE = /^[A-Za-z0-9]{6,16}$/;
+
+async function loadGuestLink(
+	fetch: typeof globalThis.fetch,
+	url: URL
+): Promise<{
+	code: string;
+	phoneMasked: string | null;
+	eventName: string;
+	displayName: string;
+} | null> {
+	const code = url.searchParams.get('g');
+	if (!code || !GUEST_LINK_CODE.test(code)) {
+		return null;
+	}
+	try {
+		const response = await eventpublicguestlinkGetGuestLink({ path: { code }, fetch });
+		if (response.response?.status !== 200 || !response.data) {
+			return null;
+		}
+		return {
+			code,
+			phoneMasked: response.data.phone_number_masked ?? null,
+			eventName: response.data.event.name,
+			displayName: response.data.display_name
+		};
+	} catch {
+		return null;
+	}
+}
+
 export const actions = {
 	default: async ({ request, fetch, url }) => {
 		const formData = await request.formData();
@@ -89,6 +138,17 @@ export const actions = {
 		// Single-use Cloudflare Turnstile token from the widget (absent when the
 		// backend has bot protection off). The backend verifies it.
 		const turnstileToken = ((formData.get('turnstileToken') as string) || '').trim() || undefined;
+		// Texted invitation: the code (not the number) is forwarded; the backend merges the
+		// phone guest and verifies the number. Without one, an optional typed number is
+		// normalised with the deployment's default country code and sent for verification.
+		const guestLinkCode = url.searchParams.get('g');
+		const guestLink = GUEST_LINK_CODE.test(guestLinkCode ?? '') ? guestLinkCode : null;
+		const features = await getFeatures(fetch);
+		const typedPhone = ((formData.get('phone') as string) || '').trim();
+		const phone =
+			!guestLink && features.sms && typedPhone
+				? normalizePhoneInput(typedPhone, features.sms_default_country_prefix || null)
+				: '';
 		const data = {
 			email: invite?.email ?? (formData.get('email') as string),
 			password: formData.get('password') as string,
@@ -100,7 +160,8 @@ export const actions = {
 			// `TESTPARTNER`, which matches nothing. The backend validates the
 			// rest; sending the code through untouched keeps this one normalizer
 			// from being the thing that breaks referral attribution.
-			referralCode: ((formData.get('referralCode') as string) || '').trim() || undefined
+			referralCode: ((formData.get('referralCode') as string) || '').trim() || undefined,
+			phone
 		};
 
 		// Validate with Zod
@@ -112,7 +173,7 @@ export const actions = {
 					errors[err.path[0].toString()] = err.message;
 				}
 			});
-			return fail(400, { errors, email: data.email });
+			return fail(400, { errors, email: data.email, phone: data.phone });
 		}
 
 		try {
@@ -125,7 +186,9 @@ export const actions = {
 					accept_toc_and_privacy: validation.data.acceptTerms,
 					...(data.referralCode ? { referral_code: data.referralCode } : {}),
 					...(returnUrl ? { return_url: returnUrl } : {}),
-					...(turnstileToken ? { turnstile_token: turnstileToken } : {})
+					...(turnstileToken ? { turnstile_token: turnstileToken } : {}),
+					...(guestLink ? { guest_link_code: guestLink } : {}),
+					...(phone ? { phone_number: phone } : {})
 				},
 				fetch
 			});
@@ -165,6 +228,16 @@ export const actions = {
 					return fail(400, {
 						errors: { email: Array.isArray(emailError) ? emailError[0] : emailError },
 						email: data.email
+					});
+				}
+
+				// A refused mobile number (taken by a real account, wrong country, banned)
+				// belongs on the phone field, not the generic banner.
+				if (phone && /number/i.test(errorMessage)) {
+					return fail(400, {
+						errors: { phone: errorMessage },
+						email: data.email,
+						phone: data.phone
 					});
 				}
 

@@ -38,7 +38,8 @@ export const DEFAULT_FEATURES: Features = {
 	 *   need `SMS_ONLY_EMAIL_DOMAIN` on the backend; the endpoints 400/404 otherwise.
 	 */
 	sms: false,
-	sms_phone_guests: false
+	sms_phone_guests: false,
+	sms_default_country_prefix: ''
 };
 
 export function resolveFeatures(raw?: Partial<Features> | null): Features {

@@ -11,7 +11,7 @@
 	import AuthBandLayout from '$lib/components/auth/AuthBandLayout.svelte';
 	import SsoProviderButtons from '$lib/components/auth/SsoProviderButtons.svelte';
 	import Turnstile from '$lib/components/auth/Turnstile.svelte';
-	import { Eye, EyeOff, Gift, Loader2, Sparkles, ArrowRight } from '@lucide/svelte';
+	import { Eye, EyeOff, Gift, Loader2, Sparkles, ArrowRight, Smartphone } from '@lucide/svelte';
 	import * as m from '$lib/paraglide/messages.js';
 	import { SeoHead } from '$lib/seo';
 	import { withReturnUrl } from '$lib/utils/safe-redirect';
@@ -31,6 +31,10 @@
 	 * unknown id simply yields `null` here and the normal form renders.
 	 */
 	const referralInvite = $derived(data.referralInvite);
+	// Texted phone-guest invitation (`?g=<code>`): signing up links that guest's RSVPs
+	// and verifies the number without a code. Resolved server-side; null = ordinary form.
+	const guestLink = $derived(data.guestLink);
+	const smsEnabled = $derived(page.data.features?.sms === true);
 
 	// Form state
 	let email = $state(form?.email || data.referralInvite?.email || '');
@@ -257,6 +261,21 @@
 >
 	<Card>
 		<CardContent class="space-y-6 p-6 sm:p-8">
+			{#if guestLink}
+				<div class="rounded-lg bg-poster-purple p-4 text-poster-white">
+					<p class="flex items-center gap-2 font-bold">
+						<Smartphone class="h-5 w-5 shrink-0" aria-hidden="true" />
+						{m['register.guestLinkTitle']()}
+					</p>
+					<p class="mt-2 text-sm">
+						{m['register.guestLinkBody']({
+							event: guestLink.eventName,
+							phone: guestLink.phoneMasked ?? ''
+						})}
+					</p>
+				</div>
+			{/if}
+
 			{#if referralInvite}
 				<!-- Poster-tinted invite banner: `bg-poster-purple text-poster-white`
 				     is the audited, mode-inert imagery pair already used by the demo
@@ -359,6 +378,54 @@
 						</p>
 					{/if}
 				</div>
+
+				{#if guestLink}
+					<!-- Number from the texted invitation: shown masked, never posted — the
+					     backend attaches the real number when it merges the guest. -->
+					<div class="space-y-2">
+						<span class="block text-sm font-medium">{m['register.phoneLabel']()}</span>
+						<div
+							class="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 text-sm"
+							aria-describedby="phone-link-hint"
+						>
+							{guestLink.phoneMasked ?? '—'}
+						</div>
+						<p id="phone-link-hint" class="text-sm text-muted-foreground">
+							{m['register.guestLinkPhoneLocked']()}
+						</p>
+					</div>
+				{:else if smsEnabled}
+					<!-- Optional mobile number: verified later with a texted code (never trusted
+					     as typed, or anyone could claim a friend's text invitations). -->
+					<div class="space-y-2">
+						<label for="phone" class="block text-sm font-medium">
+							{m['register.phoneLabel']()}
+							<span class="font-normal text-muted-foreground">{m['register.phoneOptional']()}</span>
+						</label>
+						<input
+							id="phone"
+							name="phone"
+							type="tel"
+							inputmode="tel"
+							autocomplete="tel"
+							value={form?.phone ?? ''}
+							aria-invalid={!!errors.phone}
+							aria-describedby={errors.phone ? 'phone-error' : 'phone-hint'}
+							disabled={isSubmitting}
+							class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {errors.phone
+								? 'border-destructive'
+								: ''}"
+							placeholder={m['register.phonePlaceholder']()}
+						/>
+						{#if errors.phone}
+							<p id="phone-error" class="text-sm text-destructive" role="alert">{errors.phone}</p>
+						{:else}
+							<p id="phone-hint" class="text-sm text-muted-foreground">
+								{m['register.phoneHint']()}
+							</p>
+						{/if}
+					</div>
+				{/if}
 
 				<!-- Password Field -->
 				<div class="space-y-2">

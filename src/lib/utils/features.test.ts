@@ -44,7 +44,8 @@ describe('resolveFeatures', () => {
 			referral_applications: true,
 			oauth_provider: true,
 			sms: true,
-			sms_phone_guests: true
+			sms_phone_guests: true,
+			sms_default_country_prefix: '+1'
 		};
 		expect(resolveFeatures(raw)).toEqual(raw);
 	});

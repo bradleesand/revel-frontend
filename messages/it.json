@@ -5716,7 +5716,14 @@
 		"demoNudgeRegisterAnyway": "Registrati comunque",
 		"referralInviteTitle": "Hai un invito al programma referral",
 		"referralInviteBody": "Crea il tuo account con questa email e il tuo codice referral {code} si attiva subito.",
-		"referralInviteEmailLocked": "Questo indirizzo arriva dal tuo invito e non può essere modificato."
+		"referralInviteEmailLocked": "Questo indirizzo arriva dal tuo invito e non può essere modificato.",
+		"guestLinkTitle": "Sei stato invitato via SMS",
+		"guestLinkBody": "Registrandoti, il tuo invito a {event} e il numero {phone} vengono collegati a questo account. Nessun codice: l'SMS ti è già arrivato.",
+		"guestLinkPhoneLocked": "Dal tuo invito. È verificato non appena l'account viene creato.",
+		"phoneLabel": "Numero di cellulare",
+		"phoneOptional": "(facoltativo)",
+		"phonePlaceholder": "+39 312 345 6789",
+		"phoneHint": "Sei già stato invitato via SMS? Inserisci lo stesso numero: ti mandiamo un codice e le tue risposte passano a questo account appena lo inserisci."
 	},
 	"requestInvitationButton": {
 		"mustBeLoggedIn": "Devi essere loggato per richiedere un invito",
@@ -6230,7 +6237,9 @@
 		"viewEvent": "Vedi evento",
 		"expired": "Questo link è scaduto. Chiedi all'organizzatore un nuovo invito.",
 		"notFound": "Questo link non è valido.",
-		"failed": "Non è stato possibile salvare la tua risposta. Riprova."
+		"failed": "Non è stato possibile salvare la tua risposta. Riprova.",
+		"createAccount": "Crea un account",
+		"createAccountHint": "Vuoi vedere inviti e biglietti in un unico posto? Un account conserva questa risposta e verifica il tuo numero automaticamente."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Termini di Servizio"

@@ -17,6 +17,8 @@
 	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { smsStatus, smsRequestCode, smsVerify, smsRemovePhone } from '$lib/api/generated/sdk.gen';
 	import { extractErrorMessage } from '$lib/utils/errors';
+	import { isE164, normalizePhoneInput } from '$lib/utils/phone';
+	import { page } from '$app/state';
 
 	interface Props {
 		authToken: string;
@@ -101,9 +103,11 @@
 		}
 	});
 
+	const defaultPrefix = $derived(page.data.features?.sms_default_country_prefix || null);
+
 	function handleSendCode() {
-		const cleaned = phoneValue.replace(/[\s\-().]/g, '');
-		if (!/^\+[1-9]\d{6,14}$/.test(cleaned)) {
+		const cleaned = normalizePhoneInput(phoneValue, defaultPrefix);
+		if (!isE164(cleaned)) {
 			fieldError = m['sms.phoneHelp']();
 			return;
 		}

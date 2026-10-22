@@ -5716,7 +5716,14 @@
 		"demoNudgeRegisterAnyway": "Trotzdem registrieren",
 		"referralInviteTitle": "Du wurdest zum Empfehlungsprogramm eingeladen",
 		"referralInviteBody": "Erstelle dein Konto mit dieser E-Mail-Adresse und dein Empfehlungscode {code} wird sofort aktiviert.",
-		"referralInviteEmailLocked": "Diese Adresse stammt aus deiner Einladung und kann nicht geändert werden."
+		"referralInviteEmailLocked": "Diese Adresse stammt aus deiner Einladung und kann nicht geändert werden.",
+		"guestLinkTitle": "Du wurdest per SMS eingeladen",
+		"guestLinkBody": "Mit der Registrierung werden deine Einladung zu {event} und die Nummer {phone} mit diesem Konto verknüpft. Kein Code nötig – die SMS hat dich ja erreicht.",
+		"guestLinkPhoneLocked": "Aus deiner Einladung. Sie gilt als bestätigt, sobald dein Konto angelegt ist.",
+		"phoneLabel": "Handynummer",
+		"phoneOptional": "(optional)",
+		"phonePlaceholder": "+49 151 2345678",
+		"phoneHint": "Schon mal per SMS eingeladen worden? Gib dieselbe Nummer ein: Wir schicken dir einen Code, und deine Zusagen wandern zu diesem Konto, sobald du ihn eingibst."
 	},
 	"requestInvitationButton": {
 		"mustBeLoggedIn": "Du musst angemeldet sein, um eine Einladung anzufordern",
@@ -6230,7 +6237,9 @@
 		"viewEvent": "Event ansehen",
 		"expired": "Dieser Link ist abgelaufen. Bitte den Gastgeber um eine neue Einladung.",
 		"notFound": "Dieser Link ist ungültig.",
-		"failed": "Deine Antwort konnte nicht gespeichert werden. Bitte versuch es noch mal."
+		"failed": "Deine Antwort konnte nicht gespeichert werden. Bitte versuch es noch mal.",
+		"createAccount": "Konto erstellen",
+		"createAccountHint": "Du willst deine Einladungen und Tickets an einem Ort sehen? Ein Konto behält diese Zusage und bestätigt deine Nummer automatisch."
 	},
 	"termsOfServicePage": {
 		"termsOfService": "Nutzungsbedingungen"
